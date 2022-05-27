@@ -24,15 +24,12 @@ const generate = async (opts) => {
   let ops = 0
   const nano = Nano(opts.url)
   const db = nano.db.use(opts.db)
-  console.log(opts)
   if (!opts.template) {
     opts.template = path.join(__dirname, 'templates', 'user.txt')
   }
   const template = fs.readFileSync(opts.template, { encoding: 'utf8' })
-  console.log(template)
 
   do {
-
     // pick a batch size
     const batchSize = 10 + Math.floor(Math.random() * 500)
     const batch = []
