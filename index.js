@@ -1,5 +1,5 @@
 const fs = require('fs')
-const userTemplate = fs.readFileSync('./templates/user.txt', { encoding: 'utf8' })
+const path = require('path')
 const datamaker = require('datamaker')
 const Nano = require('nano')
 
@@ -12,7 +12,7 @@ const sleep = async (t) => {
 const makeData = async (template) => {
   return new Promise((resolve, reject) => {
     let doc
-    datamaker.generate(userTemplate, 'none', 1)
+    datamaker.generate(template, 'none', 1)
       .on('data', (d) => { doc = d })
       .on('end', () => { resolve(doc) })
   })
@@ -24,6 +24,12 @@ const generate = async (opts) => {
   let ops = 0
   const nano = Nano(opts.url)
   const db = nano.db.use(opts.db)
+  console.log(opts)
+  if (!opts.template) {
+    opts.template = path.join(__dirname, 'templates', 'user.txt')
+  }
+  const template = fs.readFileSync(opts.template, { encoding: 'utf8' })
+  console.log(template)
 
   do {
 
@@ -33,7 +39,7 @@ const generate = async (opts) => {
 
     // generate a batch of writes
     for (i = 0; i < batchSize; i++) {
-      const str = await makeData(userTemplate)
+      const str = await makeData(template)
       const doc = JSON.parse(str)
       batch.push(doc)
     }

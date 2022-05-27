@@ -20,7 +20,8 @@ npm install -g couchgenerator
 ### Command-line parameters
 
 - `--url`/`-u` - the URL of the CouchDB instance e.g. `http://admin:mypassword@localhost:5984`
-- `--database`/`--db`/`-d` - the name of the databae to write to e.g. `users`
+- `--database`/`--db`/`-d` - the name of the database to write to e.g. `users`
+- `--template`/`-t` - the path of template file e.g. ./mytemplate/products.json
 
 ```sh
 couchgenerator --url 'http://admin:mypassword@localhost:5984' --db users
@@ -46,5 +47,25 @@ couchgenerator --db users
 
 ```js
 const couchgenerator = require('couchgenerator')
-await couchgenerator({ url: MYURL, db: MYDB })
+await couchgenerator({ url: MYURL, db: MYDB, template: './mytemplate.txt' })
 ```
+
+## Using a custom document template
+
+By default, `couchgenerator` creates documents that look like users. If you want to fill a database with other data types, then simply create a template file `template.txt`:
+
+```js
+{
+  "_id": "{{uuid}}",
+  "name": "{{name}}",
+  "email": "{{email}}"
+}
+```
+
+and pass the path to the file as the `--template` parameter:
+
+```
+couchgenerate --db products --template './path/to/template.txt'
+```
+
+The tags you can use to generate data values are listed in the [datamaker README](https://www.npmjs.com/package/datamaker).

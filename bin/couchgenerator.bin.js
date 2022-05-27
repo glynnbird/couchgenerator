@@ -13,10 +13,17 @@ const argv = require('yargs')
     default: process.env.COUCH_DATABASE ? process.env.COUCH_DATABASE : undefined,
     demandOption: !process.env.COUCH_DATABASE
   })
+  .option('template', {
+    alias: 't',
+    describe: 'the path to the document template',
+    default: process.env.COUCH_DOC_TEMPLATE ? process.env.COUCH_DOC_TEMPLATE : null,
+    demandOption: false
+  })
   .argv
 
 const couchgenerator = require('../index.js')
 couchgenerator({
   url: argv.url,
-  db: argv.database
+  db: argv.database,
+  template: argv.template
 })
