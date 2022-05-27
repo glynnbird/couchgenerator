@@ -1,0 +1,14 @@
+{
+  "_id": "{{uuid}}",
+  "userId": "{{last uuid}}",
+  "name": "{{name}}",
+  "username": "{{email true}}",
+  "password": "{{password | sha1}}",
+  "airport": "{{airport}}",
+  "location": {
+    "longitude": {{ longitude }},
+    "latitude": {{ latitude }}
+  },
+  "address": "{{addressuk}}",
+  "active": {{boolean}}
+}
