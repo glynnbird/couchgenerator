@@ -1,6 +1,6 @@
 {
   "name": "couchgenerator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Automatic database workload creator",
   "main": "index.js",
   "scripts": {
@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/glynnbird/couchgenerator#readme",
   "dependencies": {
-    "datamaker": "^0.9.0",
-    "nano": "^10.0.0",
-    "yargs": "^17.5.1"
+    "datamaker": "^0.9.1",
+    "nano": "^10.1.0",
+    "yargs": "^17.6.2"
   },
   "bin": {
     "couchgenerator": "bin/couchgenerator.bin.js"
