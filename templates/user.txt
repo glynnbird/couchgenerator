@@ -6,9 +6,11 @@
   "password": "{{password | sha1}}",
   "airport": "{{airport}}",
   "location": {
-    "longitude": {{ longitude }},
-    "latitude": {{ latitude }}
+    "longitude": {{ longitude LON }},
+    "latitude": {{ latitude LON }}
   },
   "address": "{{addressuk}}",
-  "active": {{boolean}}
+  "active": {{boolean}},
+  "team": "{{ oneof red orange yellow green blue indigo violet }}",
+  "lastUpdated": "{{ date_iso now }}"
 }
