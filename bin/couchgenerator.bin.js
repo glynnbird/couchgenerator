@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const syntax = 
+const syntax =
 `Syntax:
 --url/-u           (COUCH_URL)           CouchDB URL                        (required)
 --database/--db/-d (COUCH_DATABASE)      CouchDB Datbase name               (required)
@@ -8,7 +8,7 @@ const syntax =
 `
 const url = process.env.COUCH_URL || 'http://localhost:5984'
 const db = process.env.COUCH_DATABASE
-const template = process.env.COUCH_DOC_TEMPALTE
+const template = process.env.COUCH_DOC_TEMPLATE
 const { parseArgs } = require('node:util')
 const argv = process.argv.slice(2)
 const options = {
@@ -28,7 +28,8 @@ const options = {
   },
   template: {
     type: 'string',
-    short: 't'
+    short: 't',
+    default: template
   },
   help: {
     type: 'boolean',

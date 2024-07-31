@@ -1,7 +1,12 @@
 const fs = require('fs')
 const path = require('path')
 const datamaker = require('datamaker')
-const Nano = require('nano')
+const ccurllib = require('ccurllib')
+const pkg = require('./package.json')
+const h = {
+  'user-agent': `${pkg.name}@${pkg.version}`,
+  'content-type': 'application/json'
+}
 
 const sleep = async (t) => {
   return new Promise((resolve, reject) => {
@@ -22,8 +27,6 @@ const generate = async (opts) => {
   const keycache = {}
   let i
   let ops = 0
-  const nano = Nano(opts.url)
-  const db = nano.db.use(opts.db)
   if (!opts.template) {
     opts.template = path.join(__dirname, 'templates', 'user.txt')
   }
@@ -75,7 +78,15 @@ const generate = async (opts) => {
     // write it to the database
     ops += batch.length
     console.log(new Date().toISOString(), { inserts, updates, deletes, ops })
-    const response = await db.bulk({ docs: batch })
+
+    const req = {
+      method: 'post',
+      url: `${opts.url}/${opts.db}/_bulk_docs`,
+      body: JSON.stringify({ docs: batch }),
+      headers: h
+    }
+    const r = await ccurllib.request(req)
+    const response = r.result
 
     // make a note of the new rev tokens
     for (i = 0; i < response.length; i++) {

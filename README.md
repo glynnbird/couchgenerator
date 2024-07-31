@@ -34,6 +34,7 @@ couchgenerator --url 'http://admin:mypassword@localhost:5984' --db users
 
 - `COUCH_URL`
 - `COUCH_DATABASE`
+- `IAM_API_KEY` - for IBM IAM authentication
 
 ```sh
 export COUCH_URL='http://admin:mypassword@localhost:5984'
