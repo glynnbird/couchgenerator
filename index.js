@@ -34,7 +34,7 @@ const generate = async (opts) => {
 
   do {
     // pick a batch size
-    const batchSize = 10 + Math.floor(Math.random() * 500)
+    const batchSize = 10 + Math.floor(Math.random() * 5)
     const batch = []
 
     // generate a batch of writes
@@ -49,6 +49,7 @@ const generate = async (opts) => {
     let inserts = batch.length
     let updates = 0
     let deletes = 0
+    let reads = 0
     const deletedDocs = []
     for (i = 0; i < batchSize; i++) {
       if (Math.random() > 0.95 && keys.length > 0) {
@@ -77,8 +78,6 @@ const generate = async (opts) => {
 
     // write it to the database
     ops += batch.length
-    console.log(new Date().toISOString(), { inserts, updates, deletes, ops })
-
     const req = {
       method: 'post',
       url: `${opts.url}/${opts.db}/_bulk_docs`,
@@ -107,6 +106,42 @@ const generate = async (opts) => {
         delete keycache[ks[i]]
       }
     }
+
+    // do some reads
+    const kl = ks.length
+    reads = Math.floor(Math.random() * 50)
+    for (i = 0; i < reads; i++) {
+      const k = ks[Math.floor(Math.random() * kl)]
+      const req = {
+        method: 'get',
+        url: `${opts.url}/${opts.db}/${k}`,
+        headers: h
+      }
+      const r = await ccurllib.request(req)
+      const response = r.result
+    }
+
+    // do some queries
+    queries = Math.floor(Math.random() * 10)
+    for (i = 0; i < queries; i++) {
+      const k = 65 + Math.floor(Math.random() * 26)
+      const s = String.fromCharCode(k)
+      const req = {
+        method: 'get',
+        url: `${opts.url}/${opts.db}/_all_docs`,
+        qs: {
+          starkey: s,
+          limit: 10
+        },
+        headers: h
+      }
+      const r = await ccurllib.request(req)
+      const response = r.result
+    }
+
+
+    console.log(new Date().toISOString(), { inserts, updates, deletes, reads, queries })
+
 
     // pause for breath
     await sleep(Math.random() * 1000)

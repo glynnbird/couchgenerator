@@ -2,7 +2,7 @@
 
 A simple CouchDB data generation tool. Generates a stream of user document inserts, updates and deletes to a nominated database. A random batch size is chosen. Approximately 5% of the batch will be updates, 5% deletes and 90% inserts. 
 
-Handy if you're testing a CouchDB changes feed.
+Handy if you're testing a CouchDB changes feed. In addition, some single document fetches and `_all_docs` queries will be issued to simulate query load.
 
 ## Installation
 
@@ -39,9 +39,9 @@ couchgenerator --url 'http://admin:mypassword@localhost:5984' --db users
 ```sh
 export COUCH_URL='http://admin:mypassword@localhost:5984'
 couchgenerator --db users
-2022-05-27T12:53:08.896Z { inserts: 295, updates: 0, deletes: 0, ops: 295 }
-2022-05-27T12:53:10.001Z { inserts: 247, updates: 10, deletes: 16, ops: 568 }
-2022-05-27T12:53:11.134Z { inserts: 331, updates: 21, deletes: 14, ops: 934 }
+2024-12-10T14:07:42.527Z { inserts: 11, updates: 0, deletes: 0, reads: 26, queries: 8 }
+2024-12-10T14:07:43.813Z { inserts: 10, updates: 3, deletes: 0, reads: 2, queries: 7 }
+2024-12-10T14:07:45.194Z { inserts: 13, updates: 0, deletes: 1, reads: 7, queries: 8 }
 ```
 
 ## Programmatic usage
