@@ -1,8 +1,10 @@
-const fs = require('fs')
-const path = require('path')
-const datamaker = require('datamaker')
-const ccurllib = require('ccurllib')
-const pkg = require('./package.json')
+import fs from 'node:fs'
+import path from 'node:path'
+import * as datamaker from 'datamaker'
+import * as ccurllib from 'ccurllib'
+
+
+const pkg = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, 'package.json'), { encoding: 'utf8' }))
 const h = {
   'user-agent': `${pkg.name}@${pkg.version}`,
   'content-type': 'application/json'
@@ -23,12 +25,20 @@ const makeData = async (template) => {
   })
 }
 
-const generate = async (opts) => {
+const totaliseStatusCodes = (status, statusCodes) => {
+  if (statusCodes[status]) {
+    statusCodes[status]++
+  } else {
+    statusCodes[status] = 1
+  }
+}
+
+export default async function generate(opts) {
   const keycache = {}
   let i
   let ops = 0
   if (!opts.template) {
-    opts.template = path.join(__dirname, 'templates', 'user.txt')
+    opts.template = path.join(import.meta.dirname, 'templates', 'user.txt')
   }
   const template = fs.readFileSync(opts.template, { encoding: 'utf8' })
 
@@ -36,6 +46,7 @@ const generate = async (opts) => {
     // pick a batch size
     const batchSize = 10 + Math.floor(Math.random() * 5)
     const batch = []
+    const statusCodes = {}
 
     // generate a batch of writes
     for (i = 0; i < batchSize; i++) {
@@ -85,6 +96,7 @@ const generate = async (opts) => {
       headers: h
     }
     const r = await ccurllib.request(req)
+    totaliseStatusCodes(r.status, statusCodes)
     const response = r.result
 
     // make a note of the new rev tokens
@@ -118,11 +130,12 @@ const generate = async (opts) => {
         headers: h
       }
       const r = await ccurllib.request(req)
+      totaliseStatusCodes(r.status, statusCodes)
       const response = r.result
     }
 
     // do some queries
-    queries = Math.floor(Math.random() * 10)
+    const queries = Math.floor(Math.random() * 10)
     for (i = 0; i < queries; i++) {
       const k = 65 + Math.floor(Math.random() * 26)
       const s = String.fromCharCode(k)
@@ -136,16 +149,13 @@ const generate = async (opts) => {
         headers: h
       }
       const r = await ccurllib.request(req)
+      totaliseStatusCodes(r.status, statusCodes)
       const response = r.result
     }
 
-
-    console.log(new Date().toISOString(), { inserts, updates, deletes, reads, queries })
-
+    console.log(new Date().toISOString(), JSON.stringify({ inserts, updates, deletes, reads, queries, statusCodes }))
 
     // pause for breath
     await sleep(Math.random() * 1000)
   } while (1)
 }
-
-module.exports = generate

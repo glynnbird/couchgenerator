@@ -47,7 +47,7 @@ couchgenerator --db users
 ## Programmatic usage
 
 ```js
-const couchgenerator = require('couchgenerator')
+import couchgenerator from 'couchgenerator'
 await couchgenerator({ url: MYURL, db: MYDB, template: './mytemplate.txt' })
 ```
 
